@@ -1,7 +1,7 @@
 {
-  "name": "php-serialize",
-  "version": "5.1.3",
-  "description": "PHP serialize/unserialize in Javascript",
+  "name": "@tailwind/php-serialize",
+  "version": "1.0.0",
+  "description": "Cloned from npm php-serialize, and converted to use array buffers - PHP serialize/unserialize in Javascript",
   "main": "lib/cjs/index.js",
   "typings": "lib/typings/index.d.ts",
   "module": "lib/esm/index.js",
