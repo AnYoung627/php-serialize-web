@@ -1,6 +1,7 @@
 // eslint-disable-next-line import/no-cycle
 import Parser from './parser'
 import { isInteger, getClass, getIncompleteClass, __PHP_Incomplete_Class, invariant } from './helpers'
+import { stringToArrayBuffer, arrayBufferToString, BufferEncoding } from './bufferUtils'
 
 export type Options = {
   strict: boolean
@@ -110,16 +111,16 @@ function unserializeItem(parser: Parser, scope: Record<string, any>, options: Op
   throw new Error(`Invalid type '${type}' encounterd while unserializing`)
 }
 
-function unserialize(item: string | Buffer, scope: Record<string, any> = {}, givenOptions: Partial<Options> = {}): any {
-  const options: any = { ...givenOptions }
-  if (typeof options.strict === 'undefined') {
-    options.strict = true
+function unserialize(item: string | ArrayBuffer, scope: Record<string, unknown> = {}, givenOptions: Partial<Options> = {}): unknown {
+  const options = {
+    strict: true,
+    encoding: 'utf8' as BufferEncoding,
+    ...givenOptions
   }
-  if (typeof options.encoding === 'undefined') {
-    options.encoding = 'utf8'
-  }
-  const parser = new Parser(Buffer.from(item), 0, options)
-  return unserializeItem(parser, scope, options)
+
+  const buffer = typeof item === 'string' ? stringToArrayBuffer(item, options.encoding) : item;
+  const parser = new Parser(buffer, 0, options);
+  return unserializeItem(parser, scope, options);
 }
 
 export default unserialize

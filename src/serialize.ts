@@ -1,4 +1,5 @@
-import { isInteger, getByteLength, invariant } from './helpers'
+import { getByteLength } from './bufferUtils'
+import { isInteger, invariant } from './helpers'
 
 function getClassNamespace(item: any, scope: Record<string, any>) {
   return (

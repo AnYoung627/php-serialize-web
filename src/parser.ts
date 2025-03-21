@@ -1,5 +1,6 @@
 // eslint-disable-next-line import/no-cycle
 import type { Options } from './unserialize'
+import { arrayBufferToString, BufferEncoding } from './bufferUtils';
 
 export type ParserType =
   | 'null'
@@ -24,12 +25,14 @@ const PARSER_TYPES: Record<string, ParserType> = {
 
 export default class Parser {
   index: number
-  contents: Buffer
+  contents: ArrayBuffer
+  view: DataView
   options: Options
-  constructor(contents: Buffer, index: number, options: Options) {
+  constructor(contents: ArrayBuffer, index: number, options: Options) {
     this.contents = contents
     this.index = index
     this.options = options
+    this.view = new DataView(contents)
   }
   error(message = 'Syntax Error') {
     return new Error(`${message} at index ${this.index} while unserializing payload`)
@@ -37,20 +40,34 @@ export default class Parser {
   advance(index: number) {
     this.index += index
   }
-  readAhead(index: number) {
-    const contents = this.peekAhead(index)
-    this.index += index
-    return contents
+  readAhead(index: number): string {
+    const slice = new Uint8Array(this.contents.slice(this.index, this.index + index));
+    const result = arrayBufferToString(slice, this.options.encoding);
+    this.index += index;
+    return result;
   }
-  readUntil(expected: string) {
-    const index = this.contents.indexOf(expected, this.index)
-    if (index === -1) {
-      throw this.error(`Expected '${expected}'`)
+  readUntil(expected: string): string {
+    const array = new Uint8Array(this.contents);
+    let foundIndex = -1;
+
+    // Search for the expected string's first byte
+    for (let i = this.index; i < array.length; i++) {
+      if (array[i] === expected.charCodeAt(0)) {
+        foundIndex = i;
+        break;
+      }
     }
-    return this.readAhead(index - this.index)
+
+    if (foundIndex === -1) {
+      throw this.error(`Expected '${expected}'`);
+    }
+
+    const result = this.readAhead(foundIndex - this.index);
+    return result;
   }
   peekAhead(index: number): string {
-    return this.contents.toString(this.options.encoding, this.index, this.index + index)
+    const slice = new Uint8Array(this.contents.slice(this.index, this.index + index));
+    return arrayBufferToString(slice, this.options.encoding);
   }
   seekExpected(contents: string) {
     const slice = this.readAhead(contents.length)

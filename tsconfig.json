@@ -1,19 +1,25 @@
 {
-  "compilerOptions": {
-    "baseUrl": "./",
-    "jsx": "preserve",
-    "module": "CommonJS",
-    "esModuleInterop": true,
-    "strictNullChecks": true,
-    "resolveJsonModule": true,
-    "moduleResolution": "node",
-    "downlevelIteration": true,
-    "allowSyntheticDefaultImports": true,
-    "skipLibCheck": true,
-    "lib": ["es2015", "es2016", "es2017", "es2018", "esnext"]
-  },
-  "include": ["src"],
-  "exclude": [
-    "node_modules", "public"
-  ]
+	"compilerOptions": {
+		"baseUrl": "./",
+		"jsx": "preserve",
+		"module": "CommonJS",
+		"esModuleInterop": true,
+		"strictNullChecks": true,
+		"resolveJsonModule": true,
+		"moduleResolution": "node",
+		"downlevelIteration": true,
+		"allowSyntheticDefaultImports": true,
+		"skipLibCheck": true,
+		"lib": [
+			"es2015",
+			"es2016",
+			"es2017",
+			"es2018",
+			"esnext",
+			"DOM",
+			"DOM.Iterable"
+		]
+	},
+	"include": ["src"],
+	"exclude": ["node_modules", "public"]
 }

@@ -7,11 +7,10 @@ export class __PHP_Incomplete_Class {
   }
 }
 
+import { getByteLength as bufferGetByteLength } from './bufferUtils';
+
 export function getByteLength(contents: string, options: { encoding: BufferEncoding }): number {
-  if (typeof Buffer !== 'undefined') {
-    return Buffer.byteLength(contents, options.encoding)
-  }
-  return encodeURIComponent(contents).replace(/%[A-F\d]{2}/g, 'U').length
+  return bufferGetByteLength(contents, options.encoding as any);
 }
 
 // isInteger = is NOT a float but still a number
